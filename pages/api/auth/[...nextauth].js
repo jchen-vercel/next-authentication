@@ -8,4 +8,23 @@ export default NextAuth({
       clientSecret: process.env.GITHUB_SECRET,
     }),
   ],
+  database: process.env.DB_URL,
+  session: {
+    jwt: true, //telling NextAuth to use jwt for session instead of the DB
+  },
+  jwt: {
+    secret: "asdfafw",
+  },
+  callbacks: {
+    async jwt(token, user) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+  },
+  async session(session, token) {
+    session.user.id = token.id;
+    return session;
+  },
 });
